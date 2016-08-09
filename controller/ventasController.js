@@ -314,7 +314,9 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 	$scope.fechaentrega=function(fechaEdit){
 		debugger
 		if ($scope.pedidoEditar==1 && $scope.fechachange==0) {
-			document.getElementById("fecha_entrega").valueAsDate = new Date(fechaEdit)
+			var fechanueva=new Date(fechaEdit);
+			fechanueva.setDate(fechanueva.getDate() + 1);
+			document.getElementById("fecha_entrega").valueAsDate = fechanueva
 			$scope.dateEntrega=	document.getElementById("fecha_entrega").valueAsDate;
 			$scope.fechachange=1;
 		}
@@ -415,7 +417,7 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 									$scope.itemsPedido.push(item);	
 								}
 								CRUD.select("select count(distinct extenciondetalle1id) as cantidadTallas,'"+item.cantidaditem+"' as cantidaditem,'"+item.empaque+"','"+item.rowid_item+"' as  rowid_item  from erp_items_extenciones  where itemID='"+item.rowid_item+"'",function(contadortallas){
-									debugger
+									
 									CRUD.select("select distinct '"+contadortallas.cantidaditem+"' as cantidaditem,'"+contadortallas.rowid_item+"' as rowidItem,'"+contadortallas.empaque+"',"+contadortallas.cantidadTallas+" as contadorTalla,  e.itemID,item.item_referencia,e.extencionDetalle1ID as talla,0 as cantidad,0  as multiplo,ext1_d.erp_descripcion_corta,sum(stock) as stock from erp_items_extenciones  e inner join erp_items item on item.rowid=e.itemID inner join  erp_item_extencion1_detalle ext1_d on ext1_d.rowid_erp=e.extencionDetalle1ID where e.itemID='"+item.rowid_item+"'  group by extenciondetalle1id order by ext1_d.erp_descripcion_corta ",function(tallasAgregar){
 										$scope.contador1++;
 										
@@ -429,11 +431,11 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 												tallasAgregar.cantidad=tallasAgregar.cantidaditem/12;
 												
 												$scope.itemsPedido[i].tallas1.push(tallasAgregar);
-												debugger
+												
 											}
 											
 											if (tallasAgregar.contadorTalla==$scope.contador1) {
-												debugger
+												
 												$scope.item=[];
 												$scope.item=$scope.itemsPedido[$scope.contadoritemEditados];
 												$scope.tallas=$scope.itemsPedido[$scope.contadoritemEditados].tallas1;
