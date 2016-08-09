@@ -45,7 +45,9 @@ app_angular.controller('sessionController',['bootbox','Conexion','$scope','$loca
     $scope.actividades=[];
     $scope.status=[];
     $scope.alerta=[];
+    $scope.errorAlerta=[];
     $scope.$watch('online', function(newStatus) 
+        //$scope.status.connextionstate==false
         {$scope.status.connextionstate=newStatus;  
             if ($scope.status.connextionstate==false) {
             $scope.alerta.message='Verifique su conexion a Internet ';
@@ -102,7 +104,7 @@ app_angular.controller('sessionController',['bootbox','Conexion','$scope','$loca
                           url: 'http://demos.pedidosonline.co/Mobile/SubirDatos?usuario='+$scope.usuario+'&entidad=ACTIVIDADES&codigo_empresa=' + $scope.codigoempresa + '&datos=' + JSON.stringify($scope.objeto),
                             }).then(
                             function success(data) { console.log(data.data.message)}, 
-                            function error(err) {Mensajes('Error al Subir la Actividad','error','');return 
+                            function error(err) {Mensajes('Error al Subir la Actividad','error','');$scope.errorAlerta.bandera=1;return 
                         });  
                     }  
                 }
@@ -144,13 +146,13 @@ app_angular.controller('sessionController',['bootbox','Conexion','$scope','$loca
                     })
                     .then(
                         function success(data) {}, 
-                        function error(err) {Mensajes('Error al Subir items del Pedido','error','');return }
+                        function error(err) {Mensajes('Error al Subir items del Pedido','error','');$scope.errorAlerta.bandera=1;return }
                     ); 
                 }
             });
         });
-        responsePromise.error(function() {
-            function error(err) {Mensajes('Error al Subir El Pedido','error','');return }
+        responsePromise.error(function(error) {
+            Mensajes('Error al Subir El Pedido','error',''); $scope.errorAlerta.bandera=1;return
         });
     }
     $scope.sincronizar=function(){
@@ -158,6 +160,11 @@ app_angular.controller('sessionController',['bootbox','Conexion','$scope','$loca
         $scope.datosSubir();
         window.setTimeout(function(){
             //VACIAR TABLAS
+            if ($scope.errorAlerta.bandera==1) {
+                Mensajes('Error al Sincronizar, Por favor revise que su conexion sea estable','error','');
+                ProcesadoHiden();
+                return
+            }
             CRUD.Updatedynamic("delete from crm_actividades");
             CRUD.Updatedynamic("delete from t_pedidos");
             CRUD.Updatedynamic("delete from t_pedidos_detalle");
@@ -185,8 +192,6 @@ app_angular.controller('sessionController',['bootbox','Conexion','$scope','$loca
                 contador=0;
                 NewQuery=true;
                 stringSentencia='';
-                //DATOS_ENTIDADES_SINCRONIZACION[i]=localStorage.getItem(STEP_SINCRONIZACION[i].toString());
-                //DATOS_ENTIDADES_SINCRONIZACION[i] = JSON.parse(DATOS_ENTIDADES_SINCRONIZACION[i]);
                 for(var j=0; j < DATOS_ENTIDADES_SINCRONIZACION[i].length; j++) {
                     contador1++;
                     contador++;
@@ -298,7 +303,9 @@ app_angular.controller('sessionController',['bootbox','Conexion','$scope','$loca
                         "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].porcen_descuento2+
                         "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].valor_porcen_descuento2+
                         "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].porcen_descuento3+
-                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].valor_porcen_descuento3+"' "; 
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].valor_porcen_descuento3+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].observaciones+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].empaque+"' "; 
                         if (contador==499) {
                             CRUD.Updatedynamic(stringSentencia)
                             NewQuery=true;
@@ -338,7 +345,11 @@ app_angular.controller('sessionController',['bootbox','Conexion','$scope','$loca
                         "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].fechamod+
                         "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].usuariomod+
                         "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].id_impuesto+
-                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].descripcion+"' "; 
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].descripcion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].contacto+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].direccion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].email+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].telefono+"' "; 
                         if (contador==499) {
                             CRUD.Updatedynamic(stringSentencia)
                             NewQuery=true;
@@ -463,7 +474,11 @@ app_angular.controller('sessionController',['bootbox','Conexion','$scope','$loca
                         "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].fechacreacion+
                         "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].usuariocreacion+
                         "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].fechamod+
-                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].usuariomod+"' "; 
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].usuariomod+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].direccion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].contacto+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].email+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].telefono+"' "; 
                         if (contador==499) {
                             CRUD.Updatedynamic(stringSentencia)
                             NewQuery=true;
@@ -505,7 +520,8 @@ app_angular.controller('sessionController',['bootbox','Conexion','$scope','$loca
                         "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].impuesto_id+
                         "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].impuesto_porcentaje+
                         "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].descripcion_adicional+
-                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].cantidad_embalaje+"' "; 
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].cantidad_embalaje+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].tipo_inventario+"' "; 
                         
                         if (contador==499) {
                             CRUD.Updatedynamic(stringSentencia)
@@ -760,6 +776,164 @@ app_angular.controller('sessionController',['bootbox','Conexion','$scope','$loca
                         }
 
                     } 
+                    else if (STEP_SINCRONIZACION[i] == ENTIDAD_EXTENSION1  && DATOS_ENTIDADES_SINCRONIZACION[i].length!=0) {
+                        //CRUD.insert('crm_contactos',DATOS_ENTIDADES_SINCRONIZACION[i][j]);
+                        
+                        if (NewQuery) {
+                            stringSentencia=" insert into erp_item_extension1  ";
+                            NewQuery=false;
+                        }
+                        else{
+                            stringSentencia+= "   UNION   ";
+                        }
+                        stringSentencia+=  "  SELECT  '"+
+                        DATOS_ENTIDADES_SINCRONIZACION[i][j].rowid+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].id_cia+
+                        "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].rowid_erp+
+                        "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].erp_descripcion+
+                        "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].erp_descripcion_corta+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].usuariocreacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].usuariomodificacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].fechacreacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].fechamodificacion+"' "; 
+                        if (contador==499) {
+                            CRUD.Updatedynamic(stringSentencia)
+                            NewQuery=true;
+                            stringSentencia="";
+                            contador=0;
+                        }
+
+                    }
+                    else if (STEP_SINCRONIZACION[i] == ENTIDAD_EXTENSION2  && DATOS_ENTIDADES_SINCRONIZACION[i].length!=0) {
+                        //CRUD.insert('crm_contactos',DATOS_ENTIDADES_SINCRONIZACION[i][j]);
+                        
+                        if (NewQuery) {
+                            stringSentencia=" insert into erp_item_extension2  ";
+                            NewQuery=false;
+                        }
+                        else{
+                            stringSentencia+= "   UNION   ";
+                        }
+                        stringSentencia+=  "  SELECT  '"+
+                        DATOS_ENTIDADES_SINCRONIZACION[i][j].rowid+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].id_cia+
+                        "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].rowid_erp+
+                        "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].erp_descripcion+
+                        "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].erp_descripcion_corta+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].usuariocreacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].usuariomodificacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].fechacreacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].fechamodificacion+"' "; 
+                        if (contador==499) {
+                            CRUD.Updatedynamic(stringSentencia)
+                            NewQuery=true;
+                            stringSentencia="";
+                            contador=0;
+                        }
+
+                    }
+                    else if (STEP_SINCRONIZACION[i] == ENTIDAD_EXTENSION1_DETALLE  && DATOS_ENTIDADES_SINCRONIZACION[i].length!=0) {
+                        //CRUD.insert('crm_contactos',DATOS_ENTIDADES_SINCRONIZACION[i][j]);
+                        
+                        if (NewQuery) {
+                            stringSentencia=" insert into erp_item_extencion1_detalle  ";
+                            NewQuery=false;
+                        }
+                        else{
+                            stringSentencia+= "   UNION   ";
+                        }
+                        stringSentencia+=  "  SELECT  '"+
+                        DATOS_ENTIDADES_SINCRONIZACION[i][j].rowid+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].id_cia+
+                        "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].extencion1ID+
+                        "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].rowid_erp+
+                        "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].erp_descripcion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].erp_descripcion_corta+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].fechacreacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].usuariomodificacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].fechacreacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].fechamodificacion+"' "; 
+                        if (contador==499) {
+                            CRUD.Updatedynamic(stringSentencia)
+                            NewQuery=true;
+                            stringSentencia="";
+                            contador=0;
+                        }
+
+                    }
+                    else if (STEP_SINCRONIZACION[i] == ENTIDAD_EXTENSION2_DETALLE  && DATOS_ENTIDADES_SINCRONIZACION[i].length!=0) {
+                        //CRUD.insert('crm_contactos',DATOS_ENTIDADES_SINCRONIZACION[i][j]);
+                        
+                        if (NewQuery) {
+                            stringSentencia=" insert into erp_item_extencion2_detalle  ";
+                            NewQuery=false;
+                        }
+                        else{
+                            stringSentencia+= "   UNION   ";
+                        }
+                        stringSentencia+=  "  SELECT  '"+
+                        DATOS_ENTIDADES_SINCRONIZACION[i][j].rowid+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].id_cia+
+                        "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].extencion2ID+
+                        "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].rowid_erp+
+                        "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].erp_descripcion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].erp_descripcion_corta+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].fechacreacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].usuariomodificacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].fechacreacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].fechamodificacion+"' "; 
+                        if (contador==499) {
+                            CRUD.Updatedynamic(stringSentencia)
+                            NewQuery=true;
+                            stringSentencia="";
+                            contador=0;
+                        }
+
+                    }
+                    else if (STEP_SINCRONIZACION[i] == ENTIDAD_ITEM_EXTENSION  && DATOS_ENTIDADES_SINCRONIZACION[i].length!=0) {
+                        //CRUD.insert('crm_contactos',DATOS_ENTIDADES_SINCRONIZACION[i][j]);
+                        
+                        if (NewQuery) {
+                            stringSentencia=" insert into erp_items_extenciones  ";
+                            NewQuery=false;
+                        }
+                        else{
+                            stringSentencia+= "   UNION   ";
+                        }
+                        stringSentencia+=  "  SELECT  '"+
+                        DATOS_ENTIDADES_SINCRONIZACION[i][j].rowid+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].id_cia+
+                        "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].itemID+
+                        "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].extencionDetalle1ID+
+                        "', '"+DATOS_ENTIDADES_SINCRONIZACION[i][j].extencionDetalle2ID+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].indEstado+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].fechaInactivacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].fechaCreacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].fotoID+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].notas+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].usuarioInactivacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].usuarioCreacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].usuarioModificacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].fechaDodificacion+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].extencion1ID+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].extencion2ID+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].rowIDmovtoEntidad+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].porMaxExcesoKit+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].porMinExcesoKit+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].UnidadValidacionID+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].BarrasPrincipalID+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].planKitID+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].itemExtGenID+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].rowid_erp+
+                        "','"+DATOS_ENTIDADES_SINCRONIZACION[i][j].stock+"' "; 
+                        if (contador==499) {
+                            CRUD.Updatedynamic(stringSentencia)
+                            NewQuery=true;
+                            stringSentencia="";
+                            contador=0;
+                        }
+
+                    }
                     else if (STEP_SINCRONIZACION[i] == ENTIDAD_GRAFICA_DIARIO  && DATOS_ENTIDADES_SINCRONIZACION[i].length!=0) {
                         
                         GRAFICA_DIA_LABEL[j]=DATOS_ENTIDADES_SINCRONIZACION[i][j].dia;
@@ -772,12 +946,19 @@ app_angular.controller('sessionController',['bootbox','Conexion','$scope','$loca
                         GRAFICA_MES_CANTIDAD[j]=DATOS_ENTIDADES_SINCRONIZACION[i][j].cantidad;
 
                     } 
+                    else if (STEP_SINCRONIZACION[i] == TABLA_BALANCE  && DATOS_ENTIDADES_SINCRONIZACION[i].length!=0) {
+                        
+                        TABLA_BALANCE_DATOS[j]=DATOS_ENTIDADES_SINCRONIZACION[i][j];
+
+                    } 
                 }
                 if (stringSentencia!='') {
                     CRUD.Updatedynamic(stringSentencia)
                     NewQuery=true;
                 }
             }
+            localStorage.removeItem('TABLA_BALANCE'); 
+            localStorage.setItem('TABLA_BALANCE',JSON.stringify(TABLA_BALANCE_DATOS));
             localStorage.removeItem('GRAFICA_MES_CANTIDAD'); 
             localStorage.setItem('GRAFICA_MES_CANTIDAD',JSON.stringify(GRAFICA_MES_CANTIDAD));
             localStorage.removeItem('GRAFICA_MES_LABEL');
