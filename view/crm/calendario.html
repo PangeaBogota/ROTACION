@@ -67,11 +67,11 @@
                                             </div>
                                             <div class="col-sm-9 " style="padding: 0px">
                                                 <div class="col-md-8 ">
-                                                    <input type="date" class="form-control " required ng-model="horario.fechaInicial"></input>
+                                                    <input type="date" class="form-control " id="fechaInicial" ng-change="onchangeFecha('Inicial')" required ng-model="horario.fechaInicial"></input>
                                                     
                                                 </div>
                                                 <div class="col-md-4 ">
-                                                    <input type="time" class="form-control " required ng-model="horario.horaInicial"></input>
+                                                    <input type="time" class="form-control " required ng-model="horario.horaInicial" ng-change="onchangeFecha('HInicial')"></input>
                                                 </div>
                                             </div>
                                         </div>
@@ -81,11 +81,11 @@
                                             </div>
                                             <div class="col-sm-9 " style="padding: 0px">
                                                 <div class="col-md-8 ">
-                                                    <input type="date" class="form-control " required ng-model="horario.fechaFinal"></input>
+                                                    <input type="date" class="form-control " id="fechaFinal" ng-change="onchangeFecha('Final')" required ng-model="horario.fechaFinal"></input>
                                                     
                                                 </div>
                                                 <div class="col-md-4 ">
-                                                    <input type="time" class="form-control " required ng-model="horario.horaFinal"></input>
+                                                    <input type="time" ng-change="onchangeFecha('HFinal')" class="form-control " required ng-model="horario.horaFinal"></input>
                                                 </div>
                                             </div>
                                         </div>

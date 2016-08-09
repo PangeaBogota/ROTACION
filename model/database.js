@@ -619,7 +619,7 @@ app_angular.service('Factory', function ($webSql) {
     });
 
 
-    db.createTable('t_pedidos_temportal', {
+    db.createTable('t_pedidos_temporal', {
         "rowid": {
             "type": "INTEGER",
             "null": "NULL"

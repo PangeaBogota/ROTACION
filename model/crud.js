@@ -35,6 +35,9 @@ app_angular.service('Conexion', ['Factory',function (Factory) {
     CRUD.Delete = function(tabla,valor,callback){
         db.del(tabla,{'rowid':valor});
     } 
+    CRUD.DeleteDetalle = function(tabla,valor,callback){
+        db.del(tabla,{'rowid_pedido':valor});
+    } 
 	//Actualizar Registro
     CRUD.Update = function(tabla,elem, callback) {
         db.update(tabla, elem, callback);

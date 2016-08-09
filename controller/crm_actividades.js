@@ -145,6 +145,95 @@ app_angular.controller("actividadesController",['Conexion','$scope', '$routePara
         Mensajes('Actividad Nueva Creada','success','');
         
 	}
+	$scope.onchangeFecha=function(parm)
+	{
+		$scope.params=[];
+		$scope.params.fecha1=$scope.horario.fechaInicial;
+		$scope.params.fecha2=$scope.horario.fechaFinal;
+		$scope.params.hora1=$scope.horario.horaInicial;
+		$scope.params.hora2=$scope.horario.horaFinal;
+		if (parm=='Inicial') {
+			
+			if ($scope.params.fecha2!=undefined) {
+				$scope.params.fecha1=$scope.selectedDate($scope.params.fecha1)
+				$scope.params.fecha2=$scope.selectedDate($scope.params.fecha2)
+				$scope.params.fecha1=$scope.params.fecha1.replace('-','')
+				$scope.params.fecha2=$scope.params.fecha2.replace('-','')
+				$scope.params.fecha1=$scope.params.fecha1.replace('-','')
+				$scope.params.fecha2=$scope.params.fecha2.replace('-','')
+				if ($scope.params.fecha1>$scope.params.fecha2) {
+					Mensajes('Fecha Inicial No puede ser Mayor','error','');
+					document.getElementById("fechaInicial").valueAsDate = null;
+					$scope.horario.fechaInicial='';
+				}	
+			}
+		}else if (parm=='Final') {
+			if ($scope.params.fecha1!=undefined) {
+				$scope.params.fecha1=$scope.selectedDate($scope.params.fecha1)
+				$scope.params.fecha2=$scope.selectedDate($scope.params.fecha2)
+				$scope.params.fecha1=$scope.params.fecha1.replace('-','')
+				$scope.params.fecha2=$scope.params.fecha2.replace('-','')
+				$scope.params.fecha1=$scope.params.fecha1.replace('-','')
+				$scope.params.fecha2=$scope.params.fecha2.replace('-','')
+				if ($scope.params.fecha1>$scope.params.fecha2) {
+					Mensajes('Fecha Final No puede ser menor','error','');
+					document.getElementById("fechaFinal").valueAsDate = null;
+					$scope.horario.fechaFinal='';
+				}	
+			}
+		}else if (parm=='HInicial') {
+			
+			if ($scope.params.hora2!=undefined) {
+				if ($scope.params.fecha2==undefined || $scope.params.fecha1==undefined) {
+					Mensajes('Seleccionar Fechas Primero','error','');
+					$scope.horario.horaInicial='';
+					return
+				}
+				$scope.params.fecha1=$scope.selectedDate($scope.params.fecha1)
+				$scope.params.fecha2=$scope.selectedDate($scope.params.fecha2)
+				$scope.params.fecha1=$scope.params.fecha1.replace('-','')
+				$scope.params.fecha2=$scope.params.fecha2.replace('-','')
+				$scope.params.fecha2=$scope.params.fecha2.replace('-','')
+				$scope.params.fecha1=$scope.params.fecha1.replace('-','')
+				if ($scope.params.fecha1==$scope.params.fecha2) {
+					$scope.params.hora1=$scope.getHour($scope.params.hora1);
+					$scope.params.hora2=$scope.getHour($scope.params.hora2);
+					$scope.params.hora2=$scope.params.hora2.replace(':','')
+					$scope.params.hora1=$scope.params.hora1.replace(':','')
+					if ($scope.params.hora1>$scope.params.hora2) {
+						Mensajes('Hora inicial no puede ser Mayor el mismo dia','error','');
+						$scope.params.hora1=$scope.horario.horaInicial='';
+						return
+					}	
+				}
+			}
+		}else if (parm=='HFinal') {
+			if ($scope.params.hora1!=undefined) {
+				if ($scope.params.fecha2==undefined || $scope.params.fecha1==undefined) {
+					Mensajes('Seleccionar Fechas Primero','error','');
+					$scope.horario.horaFinal='';
+					return
+				}
+				$scope.params.fecha1=$scope.selectedDate($scope.params.fecha1)
+				$scope.params.fecha2=$scope.selectedDate($scope.params.fecha2)
+				$scope.params.fecha1=$scope.params.fecha1.replace('-','')
+				$scope.params.fecha2=$scope.params.fecha2.replace('-','')
+				$scope.params.fecha2=$scope.params.fecha2.replace('-','')
+				$scope.params.fecha1=$scope.params.fecha1.replace('-','')
+				if ($scope.params.fecha1==$scope.params.fecha2) {
+					$scope.params.hora1=$scope.getHour($scope.params.hora1);
+					$scope.params.hora2=$scope.getHour($scope.params.hora2);
+					$scope.params.hora2=$scope.params.hora2.replace(':','')
+					$scope.params.hora1=$scope.params.hora1.replace(':','')
+					if ($scope.params.hora1>$scope.params.hora2) {
+						Mensajes('Hora Final no puede ser menor  el mismo dia','error','');
+						$scope.params.hora1=$scope.horario.horaFinal='';
+					}	
+				}
+				
+			}
+		}
+	}
 	//Variables Auxiliares
 	var started;
     var categoryClass;
@@ -174,7 +263,7 @@ app_angular.controller("actividadesController",['Conexion','$scope', '$routePara
 				if (elem.canal=='null') 
 				{
 					elem.condicion=false;
-				}
+				} 
 				$scope.actividad=elem;
 			});
             //CRUD.selectParametro('crm_actividades','rowid',calEvent.id,function(elem){$scope.actividadSelected.push(elem);$scope.actividad=$scope.actividadSelected[0]});

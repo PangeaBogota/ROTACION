@@ -9,16 +9,11 @@ app_angular.controller("TercerosController",['Conexion','$scope','$http',functio
 	$scope.correoDescripcion=[];
 	$scope.terceros = [];
 	$scope.terceroSeleccionado=[];
-	$scope.detalleTercero=[];
 	$scope.terceroDetalles=[];
-    CRUD.selectAll('erp_terceros',function(elem) {$scope.terceros.push(elem)});
-    $scope.query=
+    CRUD.select('select*from erp_terceros order by rowid LIMIT 50',function(elem) {$scope.terceros.push(elem)});
+    
 	$scope.ConsultarDatos =function(tercero){
 		$scope.terceroSeleccionado=tercero;
-		$scope.terceroDetalles=[];
-		$scope.detalleTercero=[];
-		CRUD.select("select sucursal.rowid,  tercero.identificacion, tercero.razonsocial,sucursal.nombre_sucursal,sucursal.direccion1,sucursal.telefono1,contacto.nombres||' '||contacto.apellidos as contacto,contacto.telefono,contacto.celular,contacto.email from erp_terceros tercero inner join erp_terceros_sucursales sucursal  on sucursal.rowid_tercero=tercero.rowid left join crm_contactos contacto on contacto.rowid_sucursal=sucursal.rowid where contacto.ind_principal='true'  and  sucursal.ind_principal='true'  and tercero.rowid="+tercero.rowid+"",
-		function(elem){$scope.detalleTercero.push(elem);$scope.terceroDetalles=$scope.detalleTercero[0];})
 	}
 	$scope.abrirModal=function(tercero){
 		$('#terceroOpenModal').click();
@@ -28,14 +23,13 @@ app_angular.controller("TercerosController",['Conexion','$scope','$http',functio
 		$('#terceroOpenModalEmail').click();
 	}
 	$scope.Refrescar =function(){
-    	CRUD.selectAll('erp_terceros',function(elem) {$scope.terceros.push(elem)});
+    	CRUD.selectAll('select*from erp_terceros order by rowid LIMIT 50',function(elem) {$scope.terceros.push(elem)});
 		$scope.Search = '';
 	}
 	
 	$scope.enviarCorreo=function(){
 		$scope.correoDescripcion.para=$scope.terceroDetalles.email;
 		$scope.url='http://demos.pedidosonline.co/Mobile/enviarCorreo?usuario='+$scope.usuario+'&codigo_empresa=' + $scope.codigoempresa + '&datos=' + JSON.stringify($scope.correoDescripcion);
-		//$scope.Request($scope.url);
 	}
 	$scope.Request=function(url){
         
