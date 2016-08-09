@@ -129,18 +129,17 @@ app_angular.controller("actividadesController",['Conexion','$scope', '$routePara
 	}
 	$scope.guardarActividad=function(){
 		$scope.ultimoRegistro=[];
-		CRUD.select('select max(rowid) as rowid from crm_actividades',function(elem){$scope.ultimoRegistro.push(elem);
-		$scope.ultimoRegistroseleccionado=$scope.ultimoRegistro[0];
-		$scope.NuevoEvento.rowid=$scope.ultimoRegistroseleccionado.rowid+1;
-		$scope.NuevoEvento.usuario_creacion=$scope.sessiondate.nombre_usuario;
-		$scope.NuevoEvento.relacionado_a=$scope.terceroSelected.razonsocial;
-		$scope.NuevoEvento.sincronizado='false';
-		$scope.NuevoEvento.fecha_inicial=$scope.selectedDate($scope.horario.fechaInicial)+' '+$scope.getHour($scope.horario.horaInicial) ;
-		$scope.NuevoEvento.fecha_final=$scope.selectedDate($scope.horario.fechaFinal)+' '+$scope.getHour($scope.horario.horaFinal) ;
-		$scope.NuevoEvento.fecha_creacion=$scope.CurrentDate();
-		CRUD.insert('crm_actividades',$scope.NuevoEvento)
-		$scope.NuevoEvento=[];
-		$scope.RefrescarVista();
+		CRUD.select('select max(rowid) as rowid from crm_actividades',function(elem){
+			$scope.NuevoEvento.rowid=elem.rowid+1;
+			$scope.NuevoEvento.usuario_creacion=$scope.sessiondate.nombre_usuario;
+			$scope.NuevoEvento.relacionado_a=$scope.terceroSelected.razonsocial;
+			$scope.NuevoEvento.sincronizado='false';
+			$scope.NuevoEvento.fecha_inicial=$scope.selectedDate($scope.horario.fechaInicial)+' '+$scope.getHour($scope.horario.horaInicial) ;
+			$scope.NuevoEvento.fecha_final=$scope.selectedDate($scope.horario.fechaFinal)+' '+$scope.getHour($scope.horario.horaFinal) ;
+			$scope.NuevoEvento.fecha_creacion=$scope.CurrentDate();
+			CRUD.insert('crm_actividades',$scope.NuevoEvento)
+			$scope.NuevoEvento=[];
+			$scope.RefrescarVista();
 		})
         $('.antoclose').click();
         Mensajes('Actividad Nueva Creada','success','');
@@ -170,7 +169,8 @@ app_angular.controller("actividadesController",['Conexion','$scope', '$routePara
             $('#fc_ViewEvent').click();
             $scope.actividadesDia=[];
 			$scope.actividad=[];
-			CRUD.select("select * from vw_actividades_usuario1 where rowid= '"+calEvent.id+"' ",function(elem){
+			CRUD.select("select * from vw_actividades_usuario where rowid= '"+calEvent.id+"' ",function(elem){
+				
 				if (elem.canal=='null') 
 				{
 					elem.condicion=false;

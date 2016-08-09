@@ -2119,6 +2119,7 @@ app_angular.service('Factory', function ($webSql) {
         " select  "+
         " usu.id_canal_vendedor as canal,act.tipo,act.tema,  " +
         " act.ind_prioridad,act.descripcion, " +
+        " act.relacionado_a, " +
         " act.fecha_inicial,act.fecha_final,act.rowid," +
         " usu.nombre_completo  as usuario , "+
         " case when usu.id_canal_vendedor=null  then  'false'  else  'true' end as cond " +
@@ -2129,7 +2130,7 @@ app_angular.service('Factory', function ($webSql) {
     db.select("create view if not exists vw_actividades_dia  " + 
         " as "  +
         " select  usu.id_canal_vendedor as canal,usu.nombre_completo as usuario, act.tema,act.descripcion,act.fecha_inicial,"+
-        " case when usu.id_canal_vendedor=null  then  'false'  else  'true' end as cond  , " +
+        " case when usu.id_canal_vendedor=null  then  'false'  else  'true' end as cond  , act.relacionado_a,act.ind_prioridad, " +
         " act.fecha_final ,replace(act.fecha_inicial,'-','') as fecha_inicialF,replace(act.fecha_final,'-','') as fecha_finalF from crm_actividades  act "  +
         "   inner join   s_usuarios usu  on " +
         " usu.nombre_usuario=act.usuario_creacion " +

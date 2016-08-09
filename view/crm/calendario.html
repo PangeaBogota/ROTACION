@@ -168,14 +168,14 @@
                                         <div class="x_content">
                                             <div class="row " ng-repeat='actividad in actividadesDia' style="padding: 4px" >
                                                 <a >
-                                                    <div ng-show="actividad.condicion" class="row" style="margin: 0px">
+                                                    <div ng-show="actividad.condicion" class="row" style="margin: 0px;display:none">
                                                         <div class="form-group col-md-12" style="margin: 1px">
                                                             Canal: {{actividad.canal}}
                                                         </div>
                                                         
                                                     </div>
                                                     <div class="row" style="margin: 0px">
-                                                        <div class="form-group col-md-12" style="margin: 1px">
+                                                        <div class="form-group col-md-12" style="margin: 1px;display:none">
                                                             Usuario: {{actividad.usuario}}
                                                         </div>
                                                         
@@ -183,6 +183,18 @@
                                                     <div class="row" style="margin: 0px">
                                                         <div class="form-group col-md-12" style="margin: 1px">
                                                             Asunto: {{actividad.tema}}
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    <div class="row" style="margin: 0px">
+                                                        <div class="form-group col-md-12" style="margin: 1px">
+                                                            Cliente: {{actividad.relacionado_a}}
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    <div class="row" style="margin: 0px">
+                                                        <div class="form-group col-md-12" style="margin: 1px">
+                                                            Cliente: {{actividad.ind_prioridad}}
                                                         </div>
                                                         
                                                     </div>
@@ -229,14 +241,14 @@
                                         <div class="x_content">
                                             <div class="row "  style="padding: 4px" >
                                                 <a >
-                                                    <div class="row" ng-show="actividad.condicion" style="margin: 0px">
+                                                    <div class="row" ng-show="actividad.condicion" style="margin: 0px;display:none">
                                                         <div class="form-group col-md-12" style="margin: 1px">
                                                             Canal: {{actividad.canal}}
                                                         </div>
                                                         
                                                     </div>
                                                     <div class="row" style="margin: 0px">
-                                                        <div class="form-group col-md-12" style="margin: 1px">
+                                                        <div class="form-group col-md-12" style="margin: 1px;display:none">
                                                             Usuario: {{actividad.usuario}}
                                                         </div>
                                                         
@@ -249,7 +261,18 @@
                                                     </div>
                                                     <div class="row" style="margin: 0px">
                                                         <div class="form-group col-md-12" style="margin: 1px">
+                                                            Cliente: {{actividad.relacionado_a}}
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    <div class="row" style="margin: 0px">
+                                                        <div class="form-group col-md-12" style="margin: 1px">
                                                             Descripcion :<strong> {{actividad.descripcion}}</strong>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" style="margin: 0px">
+                                                        <div class="form-group col-md-12" style="margin: 1px">
+                                                            Prioridad :<strong> {{actividad.ind_prioridad}}</strong>
                                                         </div>
                                                     </div>
                                                     <div class="row" style="margin: 0px">
