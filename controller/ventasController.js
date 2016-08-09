@@ -310,10 +310,13 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 		FechaCreacion=FechaCreacion.replace('-','');
     	 FechaSolicitud=FechaSolicitud.replace('-','');
 	}
+	$scope.fechachange=0;
 	$scope.fechaentrega=function(fechaEdit){
-		if ($scope.pedidoEditar==1) {
+		debugger
+		if ($scope.pedidoEditar==1 && $scope.fechachange==0) {
 			document.getElementById("fecha_entrega").valueAsDate = new Date(fechaEdit)
 			$scope.dateEntrega=	document.getElementById("fecha_entrega").valueAsDate;
+			$scope.fechachange=1;
 		}
 		$scope.pedidos.fecha_solicitud=$scope.CurrentDate();
 		$scope.pedidos.fechacreacion=$scope.CurrentDate();
