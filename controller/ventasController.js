@@ -81,7 +81,6 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 						$scope.tallas[i].cantidad=0;
 						Mensajes("La Cantidad no puede ser mayor al stock","error","");
 					}
-					debugger
 					$scope.cantidadrefererencia+=$scope.tallas[i].cantidad;
 				}
 					
@@ -187,13 +186,20 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
     }
     }
     $scope.Empaque=function(){
+    	$scope.empaques=[];
     	CRUD.select("select*from m_metaclass where  class_code='PEDIDO.EMPAQUE'",
 		function(elem)
 		{
+			if ($scope.empaques.length==4) {
+
+			}else{
 			$scope.empaques.push(elem)
 			if (elem.tipo_reg_nombre=='SUELTO') {
 				$scope.empaque=elem
+			}	
 			}
+
+			
 		});	
     }
 	$scope.Empaque();
@@ -328,7 +334,6 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 	}
 	$scope.fechachange=0;
 	$scope.fechaentrega=function(fechaEdit){
-		debugger
 		if ($scope.pedidoEditar==1 && $scope.fechachange==0 && fechaEdit!=undefined) {
 			var fechanueva=new Date(fechaEdit);
 			fechanueva.setDate(fechanueva.getDate() + 1);
@@ -365,6 +370,7 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 				})
 			}
 			$scope.tallas.push(elem);
+			$scope.calcularTotalCantidad();
 		})
 	}
 	$scope.onChangePuntoEnvio=function()
@@ -601,7 +607,6 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 		}
 
 			
-		debugger
 		if ($scope.item.cantidad<1) {
 			Mensajes('Tallas sin Cantidades','error','');
 		return
@@ -692,6 +697,7 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
     	//$scope.itemsAgregadosPedido.splice(index, 1);
     	//$scope.CalcularCantidadValorTotal();
     	$scope.actualizarPrecio();
+
     	$scope.CambiarTab('3','atras');
 	}
 	$scope.delete = function (index) {
@@ -883,7 +889,7 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 		var mes=parseInt(hoy.getMonth())+1;
 		var fecha = mes+ '/' +hoy.getDate()+ '/' + hoy.getFullYear();
 		//console.log(fecha);    
-		debugger
+		
 		hoy=new Date(fecha);
 		hoy.setDate(hoy.getDate() + 1);
 		document.getElementById("fecha_entrega").valueAsDate = hoy
@@ -940,14 +946,14 @@ app_angular.controller("PedidosController",['Conexion','$scope',function (Conexi
 							$scope.generico.talla=0;
 							$scope.generico.cantidad=0;
 							$scope.generico.rowid_item=0;
-							debugger
+							
 							for (var f=1;f<9;f++) {
 
 								$scope.generico.rowid_item_ext=f;
 								
 								if (f<tallas.rowid_item_ext && $scope.detallespedido[i].tallas.length+1!=tallas.rowid_item_ext && $scope.indicemenor) {
 									$scope.detallespedido[i].tallas.push($scope.generico)
-									debugger
+									
 								}
 								else if ( ($scope.indicePush && f==tallas.rowid_item_ext) || ($scope.detallespedido[i].tallas.length+1==tallas.rowid_item_ext  && $scope.indicePush))
 								{
@@ -958,7 +964,7 @@ app_angular.controller("PedidosController",['Conexion','$scope',function (Conexi
 									$scope.indicePush=false;
 								}
 								else if ($scope.contadores.cont4>=tallas.contador) {
-									debugger
+									
 									if ($scope.detallespedido[i].tallas.length<8) {
 										$scope.detallespedido[i].tallas.push($scope.generico)
 									}
@@ -967,7 +973,6 @@ app_angular.controller("PedidosController",['Conexion','$scope',function (Conexi
 									}
 									
 								}
-								debugger
 								
 							}
 							
