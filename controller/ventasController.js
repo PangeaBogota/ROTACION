@@ -545,6 +545,7 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 		},1000)
 		Mensajes('Pedido Guardado Correctamente','success','');
 		window.setTimeout(function(){
+			$scope.confimar.salir=true
 			window.location.href = '#/ventas/pedidos_ingresados';
 		},1200)
 		
