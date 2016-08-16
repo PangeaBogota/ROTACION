@@ -241,7 +241,7 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 				count="select 100 as cantidad ";
 			}
 		}
-		else if (param1.pC==2) {
+		else if (parm1.pC==2) {
 			if ($scope.filter.codigoitem!=''  && $scope.filter.codigoitem!=undefined   &&  ( $scope.filter.descripcionitem==''   || $scope.filter.descripcionitem==undefined)){//  && $scope.filter.descripcionitem=='' || $scope.filter.descripcionitem==undefined ) {
 				vista="select*from vw_items_precios  where  rowid="+$scope.pedidos.rowid_lista_precios+"  and    item_codigo1 like '%"+$scope.filter.codigoitem+"%'  order by rowid LIMIT 100 ";
 				count="select count(*) as cantidad from vw_items_precios  where  rowid="+$scope.pedidos.rowid_lista_precios+"  and    item_codigo1 like '%"+$scope.filter.codigoitem+"%'  order by rowid LIMIT 100 ";
@@ -390,7 +390,7 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 		$scope.list_items=[];
 		$scope.filter=[];
 		$scope.list_precios=[];
-		CRUD.select("select  codigo_sucursal||'-'||nombre_sucursal as sucursal,*from erp_terceros_sucursales where rowid_tercero = '"+$scope.terceroSelected.rowid+"' ",function(elem){$scope.list_Sucursales.push(elem)})
+		CRUD.select("select  codigo_sucursal||'-'||nombre_sucursal as sucursal,*from erp_terceros_sucursales where rowid_tercero = '"+$scope.terceroSelected.rowid+"'   order by codigo_sucursal",function(elem){$scope.list_Sucursales.push(elem)})
 
 		//CRUD.selectParametro('erp_terceros_sucursales','rowid_tercero',$scope.terceroSelected.rowid,function(elem){$scope.list_Sucursales.push(elem)});
 		//CRUD.selectParametro('erp_terceros_punto_envio','rowid_tercero',$scope.terceroSelected.rowid,function(elem){$scope.list_puntoEnvio.push(elem)});	''
@@ -480,13 +480,49 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 			})
 		})
 	}
+	$scope.confimar=[];
+	$scope.confimar.next=[]
+	$scope.confimar.current=[]
+	$scope.confimar.salir=false
+	$scope.onConfirmarSalida=function(accion){
+		debugger
+		if (accion=='salir') {
+			var a='';
+			if ($scope.confimar.next.params.modulo==undefined) {
+				a='/';
+			}
+			else{
+				a='/'+$scope.confimar.next.params.modulo+'/'+$scope.confimar.next.params.url;
+			}
+
+			$timeout(function () {
+		        $location.path(a)
+		    }, 100);
+			
+		}else if (accion=='permanecer') {
+			$scope.confimar.salir=false
+		}
+	}
+	$scope.$on('$routeChangeStart', function(event,next, current) { 
+		debugger
+		if ($scope.confimar.salir==false) {
+			$scope.confimar.next=next;
+			  $scope.confimar.current=current
+			  $scope.confimar.salir=true;
+			  event.preventDefault();
+			  $('#confirmacion').click();
+		}
+		
+		  
+	 });
 	$scope.onChangeSucursalDespacho=function()
 	{
 		//console.log("select  *from erp_terceros_punto_envio where rowid_tercero = '"+$scope.terceroSelected.rowid+"'  and  codigo_sucursal = '"+$scope.sucursalDespacho.codigo_sucursal+"'   order by rowid  LIMIT 1  ");
 		$scope.pedidos.rowid_cliente_despacho=$scope.sucursalDespacho.rowid;
 		//CRUD.select("select pais.nombre||'-'||ciudad.nombre as nombre from m_localizacion  pais inner join m_localizacion ciudad  on ciudad.id_pais=pais.id_pais and pais.id_depto='' and pais.id_ciudad=''  where ciudad.id_ciudad='"+$scope.sucursalDespacho.id_ciudad+"' and ciudad.id_depto='"+$scope.sucursalDespacho.id_depto+"' and ciudad.id_pais='"+$scope.sucursalDespacho.id_pais+"'",
 		//	function(elem){$scope.ciudadSucursal=elem});
-		CRUD.select("select direccion ||'-'|| nombre_punto_envio as concatenado, *from erp_terceros_punto_envio where rowid_tercero = '"+$scope.terceroSelected.rowid+"'  and  codigo_sucursal = '"+$scope.sucursalDespacho.codigo_sucursal+"'   order by rowid ",
+		debugger
+		CRUD.select("select direccion ||'-'|| nombre_punto_envio as concatenado, *from erp_terceros_punto_envio where rowid_tercero = '"+$scope.terceroSelected.rowid+"'  and  codigo_sucursal = '"+$scope.sucursalDespacho.codigo_sucursal+"'   order by direccion ",
 			function(elem){$scope.list_puntoEnvio.push(elem);
 				//$scope.pedidos.id_punto_envio=elem.rowid;$scope.puntoEnvio=elem
 				if ($scope.pedidoEditar==1) {
@@ -553,9 +589,6 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 				{
 					$scope.validarExistencia=true;
 				}
-
-				
-				
 			}
 		})
 		if($scope.validarExistencia)
