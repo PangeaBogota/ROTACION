@@ -189,8 +189,9 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
     	$scope.empaques=[];
     	CRUD.select("select*from m_metaclass where  class_code='PEDIDO.EMPAQUE'",
 		function(elem)
-		{
-			if ($scope.empaques.length==4) {
+		{	
+			debugger
+			if ($scope.empaques.length==5) {
 
 			}else{
 			$scope.empaques.push(elem)
