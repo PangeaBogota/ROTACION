@@ -178,7 +178,11 @@ app_angular.controller('sessionController',['bootbox','Conexion','$scope','$loca
             CRUD.Updatedynamic("delete from m_metaclass");
             CRUD.Updatedynamic("delete from crm_contactos");
             CRUD.Updatedynamic("delete from s_usuarios");
-            CRUD.Updatedynamic("delete from s_canales_usuario");
+            CRUD.Updatedynamic("delete from erp_item_extension1");
+            CRUD.Updatedynamic("delete from erp_item_extension2");
+            CRUD.Updatedynamic("delete from erp_item_extencion1_detalle");
+            CRUD.Updatedynamic("delete from erp_item_extencion2_detalle");
+            CRUD.Updatedynamic("delete from erp_items_extenciones");
             
             //
             Sincronizar($scope.sessiondate.nombre_usuario,$scope.sessiondate.codigo_empresa);
