@@ -190,7 +190,6 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
     	CRUD.select("select*from m_metaclass where  class_code='PEDIDO.EMPAQUE'",
 		function(elem)
 		{	
-			debugger
 			if ($scope.empaques.length==5) {
 
 			}else{
@@ -357,11 +356,17 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
     		return;
     	}
 	}
+	$scope.prueba=[];
+	CRUD.select("select count(*) from erp_items_extenciones where itemid='61589'",function(elem){
+		debugger
+		$scope.prueba.push(elem)
+	})
 	$scope.onChangeComboItem=function(){
 		
 		$scope.tallas=[];
-		CRUD.select("select distinct  e.itemID,item.item_referencia,e.extencionDetalle1ID as talla,0 as cantidad,0  as multiplo,ext1_d.erp_descripcion_corta,sum(stock) as stock from erp_items_extenciones  e inner join erp_items item on item.rowid=e.itemID inner join  erp_item_extencion1_detalle ext1_d on ext1_d.rowid_erp=e.extencionDetalle1ID where e.itemID='"+$scope.item.rowid_item+"'  group by extenciondetalle1id order by ext1_d.erp_descripcion_corta ",function(elem){
-			
+		debugger
+		CRUD.select("select distinct  e.itemID,item.item_referencia,e.extencionDetalle1ID as talla,0 as cantidad,0  as multiplo,ext1_d.erp_descripcion_corta,sum(e.stock) as stock from erp_items_extenciones  e inner join erp_items item on item.rowid=e.itemID inner join  erp_item_extencion1_detalle ext1_d on ext1_d.rowid_erp=e.extencionDetalle1ID where e.itemID='"+$scope.item.rowid_item+"'  group by e.itemID,item.item_referencia,e.extencionDetalle1ID,ext1_d.erp_descripcion_corta order by ext1_d.erp_descripcion_corta ",function(elem){
+			debugger
 			$scope.validaciones=true;
 			if ($scope.bandera.banderaEditar==true) {
 				angular.forEach($scope.bandera.itemEdit.tallas,function(value,key){
