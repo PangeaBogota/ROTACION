@@ -298,34 +298,38 @@
         <tr>
             <td>Tallas</td>
             <td>Cantidad</td>
-            <td>Stock</td>
+            <!--<td>Stock</td>-->
+            <td>Colores</td>
         </tr>
         <tr  ng-repeat="tallas in tallas">
             <td class="col-md-2 col-ms-2 col-xs-2">{{tallas.talla}}</td>
             <td class="col-md-4  col-ms-4 col-xs-4">
                 <div >
-                 <div class=" input-group"  >
-                    <span class="input-group-btn" ng-click="cantidadTalla(tallas.talla,'restar')">
-                        <button type="button" class="btn btn-default">
-                            <span class="glyphicon glyphicon-minus">
-                                
-                            </span>
-                        </button>
-                    </span>
-                    <input type="number" class="form-control text-center" ng-model="tallas.cantidad" ng-change="onChangeCantidad(tallas.talla,tallas.stock)"  ng-readonly="readonly" style="min-width:50px">
-                    <span class="input-group-btn" ng-click="cantidadTalla(tallas.talla,'suma',tallas.stock)">
-                        <button type="button" class="btn btn-default">
-                            <span class="glyphicon glyphicon-plus">
-                            </span>
-                        </button>
-                    </span>
-                </div> 
-            </div>
+                     <div class=" input-group"  >
+                        <span class="input-group-btn" ng-click="cantidadTalla(tallas.talla,'restar')">
+                            <button type="button" class="btn btn-default">
+                                <span class="glyphicon glyphicon-minus">
+                                    
+                                </span>
+                            </button>
+                        </span>
+                        <input type="number" class="form-control text-center" ng-model="tallas.cantidad" ng-change="onChangeCantidad(tallas.talla,tallas.stock)"  ng-readonly="readonly" style="min-width:50px">
+                        <span class="input-group-btn" ng-click="cantidadTalla(tallas.talla,'suma',tallas.stock)">
+                            <button type="button" class="btn btn-default">
+                                <span class="glyphicon glyphicon-plus">
+                                </span>
+                            </button>
+                        </span>
+                    </div> 
+                </div>
             
-        </td>
-        <td>
-            {{tallas.stock}}
-        </td>
+            </td>
+            <td>
+                <button class="btn btn-success" ng-click="openModalDetalle2(tallas.itemID,tallas.talla,tallas.cantidad)"><span class="fa fa-plus"></span></button>
+            </td>
+            <!--<td>
+                {{tallas.stock}}
+            </td>-->
     </tr>
     <tr>
         <td>Total Cantidad</td>
@@ -500,23 +504,70 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="myModalLabel">Confirmacion Salida</h4>
+                        <h4 class="modal-title" id="myModalLabel">Asignacion Colores</h4>
                     </div>
                     <div class="modal-body">
                         <div id="testmodal" style="padding: 0px;">
                             <form id="antoform" class="form-horizontal calender form-label-left" role="form">
-                                
-                                <div>
-                                    Desea Salir de La Creacion del Pedido.
+                                <div class="row" style="margin: 0px">
+                                    <div class="form-group col-md-12" style="margin: 1px">
+                                        Item: <strong>{{item.item_referencia1}}</strong> 
+                                    </div>
                                 </div>
+                                <div class="row" style="margin: 0px">
+                                    <div class="form-group col-md-12" style="margin: 1px">
+                                        Talla: <strong>{{InfoItemAdicional.talla}}</strong> 
+                                    </div>
+                                </div>
+                                <div class="row" style="margin: 0px">
+                                    <div class="form-group col-md-12" style="margin: 1px">
+                                        Cantidad: <strong>{{InfoItemAdicional.cantidad}}</strong> 
+                                    </div>
+                                </div>
+                                <div class="row" style="margin: 0px">
+                                    <div class="form-group col-md-12" style="margin: 1px">
+                                        Cantidad Sin Color: <strong>{{cantidadRestante}}</strong> 
+                                    </div>
+                                </div>
+                                <table class="table">
+                                    <tr>
+                                        <td>Color</td>
+                                        <td>Cantidad</td>
+                                        <td>Stock</td>
+                                    </tr>
+                                    <tr ng-repeat="extension in itemextension2Detalle">
+                                        <td>{{extension.extencionDetalle2ID}}</td>
+                                        <td>
+                                            <div >
+                                             <div class=" input-group"  >
+                                                <span class="input-group-btn"  ng-click="adicionarCantidadDetalle2(extension.extencionDetalle2ID,'restar',extension.stock,extension.cantidadextension1)">
+                                                    <button type="button" class="btn btn-default">
+                                                        <span class="glyphicon glyphicon-minus">
+                                                            
+                                                        </span>
+                                                    </button>
+                                                </span>
+                                                <input type="number" ng-model="extension.cantidad" ng-change="onChangeCantidadDetalle2(extension.extencionDetalle2ID,extension.stock,extension.cantidadextension1)" class="form-control text-center" ng-readonly="readonly" style="min-width:50px">
+                                                <span class="input-group-btn"  ng-click="adicionarCantidadDetalle2(extension.extencionDetalle2ID,'sumar',extension.stock,extension.cantidadextension1)">
+                                                    <button type="button" class="btn btn-default">
+                                                        <span class="glyphicon glyphicon-plus">
+                                                        </span>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>{{extension.stock}}</td>
+                                    </tr>
+
+                                </table>
                                 
                                 
                             </form>
                         </div>
                     </div>
                     <div class="modal-footer">
-                    <button type="button" class="btn btn-danger antoclose" ng-click="onConfirmarSalida('salir')" data-dismiss="modal">Salir</button>
-                    <button type="button" class="btn btn-success antoclose" ng-click="onConfirmarSalida('permanecer')" data-dismiss="modal">Permanecer</button>
+                    <button type="button" class="btn btn-danger antoclose"  data-dismiss="modal">Salir</button>
+                    <button type="button" class="btn btn-success antoclose" ng-click="agregarColoresTalla()"  data-dismiss="modal">Confirmar</button>
                     </div>
                 </div>
             </div>

@@ -61,6 +61,7 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 	$scope.empaque=[];
 	$scope.cantidadprueba=0;
 	$scope.cantidades=0;
+	$scope.itemextension2Detalle=[];
 
 	$scope.onChangeCantidad=function(talla,stock)
 	{
@@ -112,9 +113,9 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 						$scope.tallas[i].cantidad-=1;	
 						$scope.tallas[i].multiplo--;
 					}
-					
+					$scope.cantidadrefererencia+=$scope.tallas[i].cantidad;
 				}
-				$scope.cantidadrefererencia+=$scope.tallas[i].cantidad;
+			
 			}
 				
 		}
@@ -356,15 +357,9 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
     		return;
     	}
 	}
-	$scope.prueba=[];
-	CRUD.select("select count(*) from erp_items_extenciones where itemid='61589'",function(elem){
-		debugger
-		$scope.prueba.push(elem)
-	})
 	$scope.onChangeComboItem=function(){
 		
 		$scope.tallas=[];
-		debugger
 		CRUD.select("select distinct  e.itemID,item.item_referencia,e.extencionDetalle1ID as talla,0 as cantidad,0  as multiplo,ext1_d.erp_descripcion_corta,sum(e.stock) as stock from erp_items_extenciones  e inner join erp_items item on item.rowid=e.itemID inner join  erp_item_extencion1_detalle ext1_d on ext1_d.rowid_erp=e.extencionDetalle1ID where e.itemID='"+$scope.item.rowid_item+"'  group by e.itemID,item.item_referencia,e.extencionDetalle1ID,ext1_d.erp_descripcion_corta order by ext1_d.erp_descripcion_corta ",function(elem){
 			debugger
 			$scope.validaciones=true;
@@ -375,9 +370,192 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 					}
 				})
 			}
+			elem.detalle2=[];
 			$scope.tallas.push(elem);
 			$scope.calcularTotalCantidad();
 		})
+	}
+	$scope.cantidadRestanteDetalle2=function(cantidad){
+		$scope.contadorCantidades=0;
+		$scope.contadorDetalle2=0;
+		for (var i = 0;i<$scope.itemextension2Detalle.length;i++) {
+			$scope.contadorCantidades+=$scope.itemextension2Detalle[i].cantidad;
+			$scope.contadorDetalle2+=$scope.itemextension2Detalle[i].cantidad;
+		}
+
+		$scope.cantidadRestante=cantidad-$scope.contadorDetalle2;
+	}
+	$scope.cantidadRestante=0;
+	$scope.onChangeCantidadDetalle2=function(extension,stock,cantidad){
+
+		$scope.cantidadRestante=0;
+		$scope.contadorDetalle2=0;
+		if ($scope.item.item_custom1!="SI") {
+			cantidad=cantidad*12;
+		}
+		for (var i =0;i<$scope.itemextension2Detalle.length;i++) {
+			$scope.cantidadRestante+=$scope.itemextension2Detalle[i].cantidad;
+			$scope.contadorDetalle2+=$scope.itemextension2Detalle[i].cantidad;
+		}
+		$scope.cantidadRestante=cantidad-$scope.cantidadRestante;
+		for (var i = 0;i<$scope.itemextension2Detalle.length;i++) {
+			if ($scope.itemextension2Detalle[i].extencionDetalle2ID==extension) {
+				
+				if ($scope.item.item_custom1!="SI") {
+					
+					$scope.validacionStock=$scope.itemextension2Detalle[i].cantidad;
+					if ($scope.validacionStock>stock) {
+						$scope.itemextension2Detalle[i].cantidad=0;
+						$scope.contadorDetalle2=$scope.contadorDetalle2-$scope.itemextension2Detalle[i].cantidad;
+						Mensajes("La Cantidad no puede ser mayor al stock","error","");
+					}
+					if ($scope.contadorDetalle2>cantidad) {
+						$scope.itemextension2Detalle[i].cantidad=0;
+						$scope.contadorDetalle2=$scope.contadorDetalle2-$scope.itemextension2Detalle[i].cantidad;
+						Mensajes("La Cantidad no sobrepasar la Cantidad Inicial","error","");
+					}
+				}else{
+					$scope.validacionStock=$scope.itemextension2Detalle[i].cantidad;
+					if ($scope.validacionStock>stock) {
+						$scope.itemextension2Detalle[i].cantidad=0;
+						$scope.contadorDetalle2=$scope.contadorDetalle2-$scope.itemextension2Detalle[i].cantidad;
+						Mensajes("La Cantidad no puede ser mayor al stock","error","");
+					}
+					if ($scope.validacionStock>cantidad) {
+						$scope.itemextension2Detalle[i].cantidad=0;
+						$scope.contadorDetalle2=$scope.contadorDetalle2-$scope.itemextension2Detalle[i].cantidad;
+						Mensajes("La Cantidad no sobrepasar la Cantidad Inicial","error","");
+					}
+				}
+					
+			}
+		}
+		$scope.contadorDetalle2=0;
+		for (var i =0;i<$scope.itemextension2Detalle.length;i++) {
+			$scope.contadorDetalle2+=$scope.itemextension2Detalle[i].cantidad;
+		}
+		$scope.cantidadRestanteDetalle2(cantidad);
+	}
+	$scope.InfoItemAdicional=[];
+	$scope.consultaDetalle2=function(item,talla,cantidad){
+		item=item.trim();
+		$scope.InfoItemAdicional=[];
+		if ($scope.item.item_custom1!='SI') {
+			$scope.InfoItemAdicional.cantidad=cantidad*12;	
+		}
+		$scope.InfoItemAdicional.talla=talla;
+		
+		$scope.itemextension2Detalle=[];
+		$scope.contadorDetalle2=0;
+		$scope.banderaConsumo=1;
+
+		for (var i =0;i<$scope.tallas.length;i++) {
+			if ($scope.tallas[i].talla==talla) {
+				if ($scope.tallas[i].detalle2.length!=0) {
+					$scope.itemextension2Detalle=$scope.tallas[i].detalle2;
+					$scope.banderaConsumo=0;
+				}
+			}
+		}
+		debugger
+		if ($scope.banderaConsumo==1) {
+			CRUD.select("select*,0 as cantidad,'"+cantidad+"' as cantidadextension1 from erp_items_extenciones where itemID='"+item+"'  and  extencionDetalle1ID='"+talla+"' ",function(elem){
+				$scope.itemextension2Detalle.push(elem);
+			})	
+		}
+		$scope.cantidadRestanteDetalle2($scope.InfoItemAdicional.cantidad);
+		
+	}
+	$scope.contadorDetalle2=0;
+	$scope.agregarColoresTalla=function(){
+		for (var i = 0;i<$scope.tallas.length;i++) {
+			if ($scope.tallas[i].talla==$scope.InfoItemAdicional.talla) {
+				$scope.tallas[i].detalle2=$scope.itemextension2Detalle;
+			}
+		}
+	}
+	$scope.adicionarCantidadDetalle2=function(extension,accion,stock,cantidad){
+
+		if ($scope.item.item_custom1!="SI") {
+			cantidad=cantidad*12;
+		}
+		
+		if (accion=="restar") {
+			for (var i = 0;i<$scope.itemextension2Detalle.length;i++) {
+
+				if ($scope.itemextension2Detalle[i].extencionDetalle2ID==extension) {
+					if ($scope.itemextension2Detalle[i].cantidad==0) {
+						return
+					}
+					if ($scope.item.item_custom1!="SI") {
+						$scope.itemextension2Detalle[i].cantidad-=1;
+						$scope.contadorDetalle2--;	
+					}else{
+						$scope.itemextension2Detalle[i].cantidad-=1;
+						$scope.contadorDetalle2--;		
+					}
+					
+				}
+			}
+				
+		}
+		else
+		{
+			if ($scope.contadorDetalle2==cantidad) {
+				Mensajes('Cantidad Maxima Alcanzada','error','');
+				return
+			}
+			for (var i = 0;i<$scope.itemextension2Detalle.length;i++) {
+				if ($scope.itemextension2Detalle[i].extencionDetalle2ID==extension) {
+					if ($scope.item.item_custom1!="SI") {
+						$scope.itemextension2Detalle[i].cantidad+=1;	
+						$scope.Validarstock=$scope.itemextension2Detalle[i].cantidad;
+						$scope.contadorDetalle2++;	
+						if ($scope.Validarstock>stock) {
+							$scope.itemextension2Detalle[i].cantidad-=1;	
+							$scope.contadorDetalle2--;	
+							Mensajes("La Cantidad no puede ser mayor al stock","error","");
+						}
+						if ($scope.itemextension2Detalle[i].cantidad>cantidad) {
+							$scope.itemextension2Detalle[i].cantidad-=1;	
+							$scope.contadorDetalle2--;	
+							Mensajes("La Cantidad no puede sobrepasar la Cantidad Seleccionada","error","");
+						}
+					}else{
+						$scope.itemextension2Detalle[i].cantidad+=1;	
+						$scope.contadorDetalle2++;	
+						$scope.Validarstock=$scope.itemextension2Detalle[i].cantidad;
+						if ($scope.Validarstock>stock) {
+							$scope.itemextension2Detalle[i].cantidad-=1;	
+							$scope.contadorDetalle2--;	
+							Mensajes("La Cantidad no puede ser mayor al stock","error","");
+						}
+						if ($scope.itemextension2Detalle[i].cantidad>cantidad) {
+							$scope.itemextension2Detalle[i].cantidad-=1;	
+							$scope.contadorDetalle2--;	
+							Mensajes("La Cantidad no puede sobrepasar la Cantidad Seleccionada","error","");
+						}
+					}
+					
+				}
+			}
+		}
+		$scope.cantidadRestanteDetalle2(cantidad);
+	}
+
+	$scope.openModalDetalle2=function(item,talla,cantidad){
+		if (cantidad==undefined) {
+			Mensajes('Agregar Cantidad','error','');
+			return
+		}
+		if (cantidad==0) {
+			Mensajes('Agregar Cantidad','error','');
+			return
+		}
+		$scope.consultaDetalle2(item,talla,cantidad);
+		$('#extension2').click();
+
+		
 	}
 	$scope.onChangePuntoEnvio=function()
 	{
