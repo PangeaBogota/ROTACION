@@ -46,6 +46,7 @@ app_angular.controller('sessionController',['bootbox','Conexion','$scope','$loca
     $scope.status=[];
     $scope.alerta=[];
     $scope.errorAlerta=[];
+    $scope.detalle_pedidos_detalle=[];
     $scope.$watch('online', function(newStatus) 
         //$scope.status.connextionstate==false
         {$scope.status.connextionstate=newStatus;  
@@ -69,10 +70,12 @@ app_angular.controller('sessionController',['bootbox','Conexion','$scope','$loca
         $scope.pedidos=[];
         $scope.actividades=[];
         $scope.detalle_pedidos=[];
+        $scope.detalle_pedidos_detalle=[];
         $scope.pedido=[];
         CRUD.select('select *from crm_actividades where sincronizado="false"',function(elem){$scope.actividades.push(elem)})
         CRUD.select('select *from t_pedidos where sincronizado="false"',function(elem){$scope.pedidos.push(elem)})
         CRUD.select('select *from t_pedidos_detalle where rowid_pedido in (select rowid from t_pedidos where sincronizado="false")',function(elem){$scope.detalle_pedidos.push(elem)})
+        CRUD.select('select *from t_pedidos_detalle_detalle ',function(elem){$scope.detalle_pedidos_detalle.push(elem)})
         window.setTimeout(function(){
             ALMACENARDATOS[0]=$scope.pedidos;
             ALMACENARDATOS[1]=$scope.detalle_pedidos;
@@ -142,18 +145,38 @@ app_angular.controller('sessionController',['bootbox','Conexion','$scope','$loca
                     $scope.detalle.rowid_pedido=$scope.pedidorowid;
                     $http({
                       method: 'GET',
-                      url: 'http://demos.pedidosonline.co/Mobile/SubirDatos?usuario='+$scope.usuario+'&entidad=PEDIDO_DETALLE&codigo_empresa=' + $scope.codigoempresa + '&datos=' + JSON.stringify($scope.detalle),
+                      url: 'http://demos.pedidosonline.co/Mobile/SubirDatos?usuario='+$scope.usuario+'&entidad=PEDIDO_DETALLE_REYMON&codigo_empresa=' + $scope.codigoempresa + '&datos=' + JSON.stringify($scope.detalle),
                     })
                     .then(
-                        function success(data) {}, 
-                        function error(err) {Mensajes('Error al Subir items del Pedido','error','');$scope.errorAlerta.bandera=1;return }
+                        function success(data1) {
+                            debugger
+                            angular.forEach($scope.detalle_pedidos_detalle,function(extension){
+                                debugger
+                                if (extension.pedidoDetalle.toString().includes(data1.data.rowid_inicial)) {
+
+                                    extension.cantidad=extension.cantidad.slice(0,-2)
+                                    $scope.detalledetalle=extension
+                                    $scope.detalledetalle.pedidoDetalle=data1.data.rowiddetalle
+                                    $http({
+                                      method: 'GET',
+                                      url: 'http://demos.pedidosonline.co/Mobile/SubirDatos?usuario='+$scope.usuario+'&entidad=T_PEDIDOS_DETALLE_DETALLE&codigo_empresa=' + $scope.codigoempresa + '&datos=' + JSON.stringify($scope.detalledetalle),
+                                    })
+                                    .then(
+                                        function success(data2) {
+                                        }, 
+                                        function error(err) {Mensajes('Error al Subir items del Pedido','error','');$scope.errorAlerta.bandera=1;return }
+                                    ); 
+                                }
+                            })
+                        }, 
+                        function error(err) { }
                     ); 
                 }
             });
         });
         responsePromise.error(function(error) {
             Mensajes('Error al Subir El Pedido','error',''); $scope.errorAlerta.bandera=1;return
-        });
+        }); 
     }
     $scope.sincronizar=function(){
         ProcesadoShow();
@@ -183,6 +206,7 @@ app_angular.controller('sessionController',['bootbox','Conexion','$scope','$loca
             CRUD.Updatedynamic("delete from erp_item_extencion1_detalle");
             CRUD.Updatedynamic("delete from erp_item_extencion2_detalle");
             CRUD.Updatedynamic("delete from erp_items_extenciones");
+            CRUD.Updatedynamic("delete from t_pedidos_detalle_detalle");
             
             //
             Sincronizar($scope.sessiondate.nombre_usuario,$scope.sessiondate.codigo_empresa);

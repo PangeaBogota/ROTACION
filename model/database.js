@@ -99,6 +99,40 @@ app_angular.service('Factory', function ($webSql) {
         }
     })
 
+    db.createTable('t_pedidos_detalle_detalle',{
+        "rowid": {
+            "type": "text",
+            "null": "NULL"
+        },
+        "pedidoDetalle": {
+            "type": "text",
+            "null": "NULL"
+        },
+        "itemExtension2Detalle": {
+            "type": "text",
+            "null": "NULL"
+        },
+        "cantidad": {
+            "type": "text",
+            "null": "NULL"
+        },
+        "fechacreacion": {
+            "type": "text",
+            "null": "NULL"
+        },
+        "usuariocreacion": {
+            "type": "text",
+            "null": "NULL"
+        },
+        "usuariomodificacion": {
+            "type": "text",
+            "null": "NULL"
+        },
+        "fechamodificacion": {
+            "type": "text",
+            "null": "NULL"
+        }
+    })
     db.createTable('s_canales_usuario',{
         "rowid": {
             "type": "text",

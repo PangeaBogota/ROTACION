@@ -326,6 +326,8 @@
             </td>
             <td>
                 <button class="btn btn-success" ng-click="openModalDetalle2(tallas.itemID,tallas.talla,tallas.cantidad)"><span class="fa fa-plus"></span></button>
+                <span class="fa fa-exclamation-triangle" ng-hide="tallas.estadoextension2==1"></span>
+                <span class="fa fa-check-circle" ng-show="tallas.estadoextension2==1"></span>
             </td>
             <!--<td>
                 {{tallas.stock}}
@@ -558,10 +560,7 @@
                                         </td>
                                         <td>{{extension.stock}}</td>
                                     </tr>
-
                                 </table>
-                                
-                                
                             </form>
                         </div>
                     </div>
