@@ -10,7 +10,7 @@ app_angular.controller("TercerosController",['Conexion','$scope','$http',functio
 	$scope.terceros = [];
 	$scope.terceroSeleccionado=[];
 	$scope.terceroDetalles=[];
-    CRUD.select('select*from erp_terceros order by rowid LIMIT 50',function(elem) {$scope.terceros.push(elem)});
+    CRUD.select('select*from erp_terceros order by razonsocial LIMIT 50',function(elem) {$scope.terceros.push(elem)});
     
 	$scope.ConsultarDatos =function(tercero){
 		$scope.terceroSeleccionado=tercero;
@@ -23,7 +23,7 @@ app_angular.controller("TercerosController",['Conexion','$scope','$http',functio
 		$('#terceroOpenModalEmail').click();
 	}
 	$scope.Refrescar =function(){
-    	CRUD.selectAll('select*from erp_terceros order by rowid LIMIT 50',function(elem) {$scope.terceros.push(elem)});
+    	CRUD.selectAll('select*from erp_terceros order by razonsocial LIMIT 50',function(elem) {$scope.terceros.push(elem)});
 		$scope.Search = '';
 	}
 	

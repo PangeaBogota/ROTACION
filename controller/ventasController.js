@@ -63,6 +63,7 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 	$scope.cantidades=0;
 	$scope.itemextension2Detalle=[];
 	$scope.cantidadParcialItem=0;
+	$scope.tallaInidiceColor=[];
 	$scope.onChangeCantidad=function(talla,stock)
 	{
 		$scope.cantidadrefererencia=0;
@@ -72,17 +73,17 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 				if ($scope.item.item_custom1!="SI") {
 					$scope.validacionStock=$scope.tallas[i].cantidad*12;
 					//$scope.cantidadrefererencia=$scope.tallas[i].cantidad;
-					if ($scope.validacionStock>stock) {
-						$scope.tallas[i].cantidad=0;
-						Mensajes("La Cantidad no puede ser mayor al stock","error","");
-					}
+					//if ($scope.validacionStock>stock) {
+					//	$scope.tallas[i].cantidad=0;
+					//	Mensajes("La Cantidad no puede ser mayor al stock","error","");
+					//}
 					$scope.cantidadrefererencia+=$scope.tallas[i].cantidad;
 				}else{
 					$scope.validacionStock=$scope.tallas[i].cantidad;
-					if ($scope.validacionStock>stock) {
-						$scope.tallas[i].cantidad=0;
-						Mensajes("La Cantidad no puede ser mayor al stock","error","");
-					}
+					//if ($scope.validacionStock>stock) {
+					//	$scope.tallas[i].cantidad=0;
+					//	Mensajes("La Cantidad no puede ser mayor al stock","error","");
+					//}
 					$scope.cantidadrefererencia+=$scope.tallas[i].cantidad;
 				}
 					
@@ -98,6 +99,14 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 			$scope.cantidadrefererencia+=$scope.tallas[i].cantidad;
 		}
 	}
+	$scope.eliminarColores=function(){
+		for (var i =0;i< $scope.tallas.length;i++) {
+			if ($scope.tallaInidiceColor.cont1==i) {
+				$scope.tallas[i].detalle2=[];
+				$scope.tallas[i].estadoextension2=0;
+			}
+		}
+	}
 	$scope.cantidadTalla=function(talla,accion,stock)
 	{
 		if (accion=="restar") {
@@ -105,6 +114,13 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 
 				if ($scope.tallas[i].talla==talla) {
 					if ($scope.tallas[i].cantidad==0) {
+						return
+					}
+					if ($scope.tallas[i].estadoextension2!=0) {
+						//Mensajes('No puedes disminuir la cantidad con Colores Asignados','error','')
+						$('#confirmacioncolores').click();
+						$scope.tallaInidiceColor.cont1=[];
+						$scope.tallaInidiceColor.cont1=i;
 						return
 					}
 					if ($scope.item.item_custom1!="SI") {
@@ -128,20 +144,20 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 						$scope.tallas[i].cantidad+=0.5;	
 						$scope.tallas[i].multiplo++;
 						$scope.Validarstock=$scope.tallas[i].cantidad*12;
-						if ($scope.Validarstock>stock) {
-							$scope.tallas[i].cantidad-=0.5;	
-							$scope.tallas[i].multiplo--;
-							Mensajes("La Cantidad no puede ser mayor al stock","error","");
-						}
+						//if ($scope.Validarstock>stock) {
+						//	$scope.tallas[i].cantidad-=0.5;	
+						//	$scope.tallas[i].multiplo--;
+						//	Mensajes("La Cantidad no puede ser mayor al stock","error","");
+						//}
 					}else{
 						$scope.tallas[i].cantidad+=1;	
 						$scope.tallas[i].multiplo++;
 						$scope.Validarstock=$scope.tallas[i].cantidad;
-						if ($scope.Validarstock>stock) {
-							$scope.tallas[i].cantidad-=1;	
-							$scope.tallas[i].multiplo--;
-							Mensajes("La Cantidad no puede ser mayor al stock","error","");
-						}
+						//if ($scope.Validarstock>stock) {
+						//	$scope.tallas[i].cantidad-=1;	
+						//	$scope.tallas[i].multiplo--;
+						//	Mensajes("La Cantidad no puede ser mayor al stock","error","");
+						//}
 					}
 					
 				}
@@ -196,9 +212,9 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 
 			}else{
 			$scope.empaques.push(elem)
-			if (elem.tipo_reg_nombre=='SUELTO') {
-				$scope.empaque=elem
-			}	
+			//if (elem.tipo_reg_nombre=='SUELTO') {
+			//	$scope.empaque=elem
+			//}	
 			}
 
 			
@@ -343,6 +359,18 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 			$scope.dateEntrega=	document.getElementById("fecha_entrega").valueAsDate;
 			$scope.fechachange=1;
 		}
+		var hoy = new Date($scope.dateEntrega);
+		//hoy.setTime(hoy.getTime()+24*60*60*1000);
+		var i=hoy.getDay()
+		debugger
+		if (i==0) {
+			Mensajes('No se puede seleccionar un dia festivo','error','');
+    		$scope.pedidos.fecha_entrega='';
+    		document.getElementById("fecha_entrega").valueAsDate = null;
+    		return;
+		}
+		
+
 		$scope.pedidos.fecha_solicitud=$scope.CurrentDate();
 		$scope.pedidos.fechacreacion=$scope.CurrentDate();
 		$scope.pedidos.fecha_entrega=$scope.SelectedDate($scope.dateEntrega);
@@ -412,11 +440,11 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 				if ($scope.item.item_custom1!="SI") {
 					
 					$scope.validacionStock=$scope.itemextension2Detalle[i].cantidad;
-					if ($scope.validacionStock>stock) {
-						$scope.itemextension2Detalle[i].cantidad=0;
-						$scope.contadorDetalle2=$scope.contadorDetalle2-$scope.itemextension2Detalle[i].cantidad;
-						Mensajes("La Cantidad no puede ser mayor al stock","error","");
-					}
+					//if ($scope.validacionStock>stock) {
+					//	$scope.itemextension2Detalle[i].cantidad=0;
+					//	$scope.contadorDetalle2=$scope.contadorDetalle2-$scope.itemextension2Detalle[i].cantidad;
+					//	Mensajes("La Cantidad no puede ser mayor al stock","error","");
+					//}
 					if ($scope.contadorDetalle2>cantidad) {
 						$scope.itemextension2Detalle[i].cantidad=0;
 						$scope.contadorDetalle2=$scope.contadorDetalle2-$scope.itemextension2Detalle[i].cantidad;
@@ -424,11 +452,11 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 					}
 				}else{
 					$scope.validacionStock=$scope.itemextension2Detalle[i].cantidad;
-					if ($scope.validacionStock>stock) {
-						$scope.itemextension2Detalle[i].cantidad=0;
-						$scope.contadorDetalle2=$scope.contadorDetalle2-$scope.itemextension2Detalle[i].cantidad;
-						Mensajes("La Cantidad no puede ser mayor al stock","error","");
-					}
+					//if ($scope.validacionStock>stock) {
+					//	$scope.itemextension2Detalle[i].cantidad=0;
+					//	$scope.contadorDetalle2=$scope.contadorDetalle2-$scope.itemextension2Detalle[i].cantidad;
+					//	Mensajes("La Cantidad no puede ser mayor al stock","error","");
+					//}
 					if ($scope.validacionStock>cantidad) {
 						$scope.itemextension2Detalle[i].cantidad=0;
 						$scope.contadorDetalle2=$scope.contadorDetalle2-$scope.itemextension2Detalle[i].cantidad;
@@ -453,14 +481,16 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 		}
 		$scope.cantidadParcialItem=$scope.InfoItemAdicional.cantidad
 		$scope.InfoItemAdicional.talla=talla;
-		
 		$scope.itemextension2Detalle=[];
 		$scope.contadorDetalle2=0;
 		$scope.banderaConsumo=1;
-
 		for (var i =0;i<$scope.tallas.length;i++) {
+
 			if ($scope.tallas[i].talla==talla) {
 				if ($scope.tallas[i].detalle2.length!=0) {
+					for (var f=0;f<$scope.tallas[i].detalle2.length;f++) {
+						$scope.tallas[i].detalle2[f].cantidadextension1=cantidad;	
+					}
 					$scope.itemextension2Detalle=$scope.tallas[i].detalle2;
 					$scope.banderaConsumo=0;
 				}
@@ -479,19 +509,23 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 		for (var i = 0;i<$scope.tallas.length;i++) {
 			if ($scope.tallas[i].talla==$scope.InfoItemAdicional.talla) {
 				$scope.tallas[i].detalle2=$scope.itemextension2Detalle;
+
 				if ($scope.contadorDetalle2==$scope.cantidadParcialItem) {
 					//si se le agregaron todos los colores a la talla
 					$scope.tallas[i].estadoextension2=1;
+				}else if ($scope.contadorDetalle2>0) {
+					$scope.tallas[i].estadoextension2=2;
 				}
 				else
 				{
 					$scope.tallas[i].estadoextension2=0;
 				}
+
 			}
 		}
 	}
 	$scope.adicionarCantidadDetalle2=function(extension,accion,stock,cantidad){
-
+		debugger
 		if ($scope.item.item_custom1!="SI") {
 			cantidad=cantidad*12;
 		}
@@ -517,6 +551,7 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 		}
 		else
 		{
+
 			if ($scope.contadorDetalle2==cantidad) {
 				Mensajes('Cantidad Maxima Alcanzada','error','');
 				return
@@ -527,11 +562,11 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 						$scope.itemextension2Detalle[i].cantidad+=1;	
 						$scope.Validarstock=$scope.itemextension2Detalle[i].cantidad;
 						$scope.contadorDetalle2++;	
-						if ($scope.Validarstock>stock) {
-							$scope.itemextension2Detalle[i].cantidad-=1;	
-							$scope.contadorDetalle2--;	
-							Mensajes("La Cantidad no puede ser mayor al stock","error","");
-						}
+						//if ($scope.Validarstock>stock) {
+						//	$scope.itemextension2Detalle[i].cantidad-=1;	
+						//	$scope.contadorDetalle2--;	
+						//	Mensajes("La Cantidad no puede ser mayor al stock","error","");
+						//}
 						if ($scope.itemextension2Detalle[i].cantidad>cantidad) {
 							$scope.itemextension2Detalle[i].cantidad-=1;	
 							$scope.contadorDetalle2--;	
@@ -541,11 +576,11 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 						$scope.itemextension2Detalle[i].cantidad+=1;	
 						$scope.contadorDetalle2++;	
 						$scope.Validarstock=$scope.itemextension2Detalle[i].cantidad;
-						if ($scope.Validarstock>stock) {
-							$scope.itemextension2Detalle[i].cantidad-=1;	
-							$scope.contadorDetalle2--;	
-							Mensajes("La Cantidad no puede ser mayor al stock","error","");
-						}
+						//if ($scope.Validarstock>stock) {
+						//	$scope.itemextension2Detalle[i].cantidad-=1;	
+						//	$scope.contadorDetalle2--;	
+						//	Mensajes("La Cantidad no puede ser mayor al stock","error","");
+						//}
 						if ($scope.itemextension2Detalle[i].cantidad>cantidad) {
 							$scope.itemextension2Detalle[i].cantidad-=1;	
 							$scope.contadorDetalle2--;	
@@ -568,7 +603,7 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 			Mensajes('Agregar Cantidad','error','');
 			return
 		}
-		
+		debugger
 		$scope.consultaDetalle2(item,talla,cantidad);
 		$('#extension2').click();
 
@@ -686,7 +721,6 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 	$scope.confimar.current=[]
 	$scope.confimar.salir=false
 	$scope.onConfirmarSalida=function(accion){
-		debugger
 		if (accion=='salir') {
 			var a='';
 			if ($scope.confimar.next.params.modulo==undefined) {
@@ -701,11 +735,15 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 		    }, 100);
 			
 		}else if (accion=='permanecer') {
-			$scope.confimar.salir=false
+			$scope.confimar.salir=false;
+			
+		}
+		else if (accion=='guardar') {
+			$scope.confimar.salir=false;
+			$scope.validacionInsert()
 		}
 	}
 	$scope.$on('$routeChangeStart', function(event,next, current) { 
-		debugger
 		if ($scope.confimar.salir==false) {
 			$scope.confimar.next=next;
 			  $scope.confimar.current=current
@@ -722,7 +760,7 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 		$scope.pedidos.rowid_cliente_despacho=$scope.sucursalDespacho.rowid;
 		//CRUD.select("select pais.nombre||'-'||ciudad.nombre as nombre from m_localizacion  pais inner join m_localizacion ciudad  on ciudad.id_pais=pais.id_pais and pais.id_depto='' and pais.id_ciudad=''  where ciudad.id_ciudad='"+$scope.sucursalDespacho.id_ciudad+"' and ciudad.id_depto='"+$scope.sucursalDespacho.id_depto+"' and ciudad.id_pais='"+$scope.sucursalDespacho.id_pais+"'",
 		//	function(elem){$scope.ciudadSucursal=elem});
-		debugger
+		
 		CRUD.select("select direccion ||'-'|| nombre_punto_envio as concatenado, *from erp_terceros_punto_envio where rowid_tercero = '"+$scope.terceroSelected.rowid+"'  and  codigo_sucursal = '"+$scope.sucursalDespacho.codigo_sucursal+"'   order by direccion ",
 			function(elem){$scope.list_puntoEnvio.push(elem);
 				//$scope.pedidos.id_punto_envio=elem.rowid;$scope.puntoEnvio=elem
@@ -854,7 +892,6 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 			Mensajes('Tallas sin Cantidades','error','');
 		return
 		}
-		debugger
 		$scope.item.multiplo=$scope.multiplo;
 		$scope.item.tallas=$scope.tallasAgregar;
 		if ($scope.Variables==undefined) {
@@ -981,7 +1018,6 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 						}
 						detalle.cantidad=detalle.cantidad1;
 						a++
-						debugger
 						$scope.detalle.rowid=contadorDetalle.rowid+1+a;
 						$scope.detalle.rowid_item=value.rowid_item;
 						$scope.detalle.rowid_pedido=$scope.pedidos.rowid;
@@ -1008,7 +1044,6 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
 						$scope.detalle.observaciones=value.observaciones;
 						$scope.detalle.fechacreacion=$scope.CurrentDate();
 						CRUD.insert($scope.tablaMovimientoDestino,$scope.detalle);
-						debugger
 						for (var i = 0;i<detalle.detalle2.length;i++) {
 							if (detalle.detalle2[i].cantidad>0) {
 								$scope.extensionInsert=[];
@@ -1138,7 +1173,7 @@ app_angular.controller("pedidoController",['Conexion','$scope','$location','$htt
     angular.element('#ui-id-1').mouseover(function (){
         angular.element('#ui-id-1').show();
     });
-    if ($scope.terceroDeTercero==undefined) {
+    if ( $scope.terceroDeTercero==undefined || !$scope.terceroDeTercero.includes('p') ) {
     	var hoy = new Date();
 		var i=0;
 		while (i<3) {
@@ -1263,7 +1298,6 @@ app_angular.controller("PedidosController",['Conexion','$scope',function (Conexi
 		$scope.ConsultarDatos(pedido);
 	}
 	$scope.onretomarPedido=function(rowid_pedido){
-		debugger
 	}
 	
 	$scope.CambiarTab = function (tab_actual, accion) {

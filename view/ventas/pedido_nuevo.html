@@ -322,7 +322,6 @@
                         </span>
                     </div> 
                 </div>
-            
             </td>
             <td>
                 <button class="btn btn-success" ng-click="openModalDetalle2(tallas.itemID,tallas.talla,tallas.cantidad)"><span class="fa fa-plus"></span></button>
@@ -463,7 +462,7 @@
                                 <div class="form-group">
                                     <label >Observaciones <span ></span>
                                     </label>
-                                    <textarea class="form-control" rows="4" id="descripcion" ng-model="pedidos.observaciones" ></textarea>
+                                    <textarea class="form-control" rows="2" id="descripcion" ng-model="pedidos.observaciones" ></textarea>
                                 </div>
                             </form>
                             <div class="form-actions">
@@ -487,7 +486,7 @@
                             <form id="antoform" class="form-horizontal calender form-label-left" role="form">
                                 
                                 <div>
-                                    Desea Salir de La Creacion del Pedido.
+                                    ¿Desea Guardar El Pedido?
                                 </div>
                                 
                                 
@@ -496,12 +495,39 @@
                     </div>
                     <div class="modal-footer">
                     <button type="button" class="btn btn-danger antoclose" ng-click="onConfirmarSalida('salir')" data-dismiss="modal">Salir</button>
-                    <button type="button" class="btn btn-success antoclose" ng-click="onConfirmarSalida('permanecer')" data-dismiss="modal">Permanecer</button>
+                    <button type="button" class="btn btn-success antoclose" ng-click="onConfirmarSalida('guardar')" data-dismiss="modal">Si</button>
+                    <button type="button" class="btn btn-primary antoclose" ng-click="onConfirmarSalida('permanecer')" data-dismiss="modal">Permanecer</button>
                     </div>
                 </div>
             </div>
         </div>
         <div id="confirmacion" data-toggle="modal" data-target="#confirmacionsalida"></div>
+        <div id="coloresConfirmacion" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Confirmacion</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="testmodal" style="padding: 0px;">
+                            <form id="antoform" class="form-horizontal calender form-label-left" role="form">
+                                
+                                <div>
+                                    Desea Eliminar Colores para Disminuir la Cantidad
+                                </div>
+                                
+                                
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-danger antoclose"  data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-success antoclose" ng-click="eliminarColores()" data-dismiss="modal">Si</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="confirmacioncolores" data-toggle="modal" data-target="#coloresConfirmacion"></div>
         <div id="extensionDetalle2" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -540,8 +566,7 @@
                                     <tr ng-repeat="extension in itemextension2Detalle">
                                         <td>{{extension.extencionDetalle2ID}}</td>
                                         <td>
-                                            <div >
-                                             <div class=" input-group"  >
+                                             <div class=" input-group" style="max-width:160px"  >
                                                 <span class="input-group-btn"  ng-click="adicionarCantidadDetalle2(extension.extencionDetalle2ID,'restar',extension.stock,extension.cantidadextension1)">
                                                     <button type="button" class="btn btn-default">
                                                         <span class="glyphicon glyphicon-minus">
@@ -549,7 +574,7 @@
                                                         </span>
                                                     </button>
                                                 </span>
-                                                <input type="number" ng-model="extension.cantidad" ng-change="onChangeCantidadDetalle2(extension.extencionDetalle2ID,extension.stock,extension.cantidadextension1)" class="form-control text-center" ng-readonly="readonly" style="min-width:50px">
+                                                <input type="number" ng-model="extension.cantidad" ng-change="onChangeCantidadDetalle2(extension.extencionDetalle2ID,extension.stock,extension.cantidadextension1)" class="form-control text-center" ng-readonly="readonly" />
                                                 <span class="input-group-btn"  ng-click="adicionarCantidadDetalle2(extension.extencionDetalle2ID,'sumar',extension.stock,extension.cantidadextension1)">
                                                     <button type="button" class="btn btn-default">
                                                         <span class="glyphicon glyphicon-plus">

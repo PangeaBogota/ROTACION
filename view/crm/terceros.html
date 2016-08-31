@@ -68,13 +68,13 @@
                             </div>
                             <div class="row" style="margin: 0px">
                                 <div class="form-group col-md-12" style="margin: 1px">
-                                    Telefono : <a href="tel:+{{terceroDetalles.telefono1}}"><strong>{{terceroDetalles.telefono1}}</strong> </a>
+                                    Telefono : <a href="tel:+{{terceroSeleccionado.telefono}}"><strong>{{terceroSeleccionado.telefono}}</strong> </a>
                                 </div>
                             </div>
                             <div class="row" style="margin: 0px">
-                                <a href="http://maps.google.com/?q={{terceroDetalles.direccion1}}">
+                                <a href="http://maps.google.com/?q={{terceroSeleccionado.direccion}}">
                                    <div class="form-group col-md-12" style="margin: 1px">
-                                    Direccion : <strong>{{terceroDetalles.direccion1}}</strong> 
+                                    Direccion : <strong>{{terceroSeleccionado.direccion}}</strong> 
                                     </div>  
                                 </a>
                                
@@ -82,22 +82,14 @@
                             <h3>Informacion Contacto</h3>
                             <div class="row" style="margin: 0px">
                                 <div class="form-group col-md-12 col-xs-12" style="margin: 1px">
-                                    Nombre :<strong> {{terceroDetalles.contacto}}</strong>
-                                </div>
-                            </div>
-                            <div class="row" style="margin: 0px">
-                                <div class="form-group col-md-12 col-xs-12" style="margin: 1px">
-                                    Telefono Pricipal :<a href="tel:+{{terceroDetalles.telefono}}"><strong> {{terceroDetalles.telefono}}</strong></a>
+                                    Nombre :<strong> {{terceroSeleccionado.contacto}}</strong>
                                 </div>
                             </div>
                             <div class="row" style="margin: 0px">
                                 <div class="form-group col-md-6 col-xs-12" style="margin: 1px">
-                                    Telefono Alterno :<a href="tel:+{{terceroDetalles.celular}}"><strong> {{terceroDetalles.celular}}</strong></a>
-                                </div>
-                            </div>
-                            <div class="row" style="margin: 0px">
-                                <div class="form-group col-md-6 col-xs-12" style="margin: 1px">
-                                    Correo :<a href="mailto:{{terceroDetalles.email}}"><strong> {{terceroDetalles.email}}</strong></a>
+                                    Correo :<a href="mailto:{{terceroSeleccionado.email}}"><strong> {{terceroSeleccionado.email}}
+                                    </strong>
+                                    </a>
                                 </div>
                             </div>
                         </form>
@@ -150,7 +142,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default antoclose" data-dismiss="modal"  >Close</button>
+                    <button type="button" class="btn btn-default antoclose" data-dismiss="modal"  >Cerrar</button>
                     <button type="button" class="btn btn-success antoclose" data-dismiss="modal"  ng-click="enviarCorreo()">Enviar Correo</button>
                 </div>
             </div>
