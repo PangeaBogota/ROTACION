@@ -313,7 +313,7 @@
                                 </span>
                             </button>
                         </span>
-                        <input type="number" class="form-control text-center" ng-model="tallas.cantidad" ng-change="onChangeCantidad(tallas.talla,tallas.stock)"  ng-readonly="readonly" style="min-width:50px">
+                        <input type="number" class="form-control text-center" ng-model="tallas.cantidad"  ng-change="onChangeCantidad(tallas.talla,tallas.stock)"   style="min-width:50px">
                         <span class="input-group-btn" ng-click="cantidadTalla(tallas.talla,'suma',tallas.stock)">
                             <button type="button" class="btn btn-default">
                                 <span class="glyphicon glyphicon-plus">
@@ -325,8 +325,8 @@
             </td>
             <td>
                 <button class="btn btn-success" ng-click="openModalDetalle2(tallas.itemID,tallas.talla,tallas.cantidad)"><span class="fa fa-plus"></span></button>
-                <span class="fa fa-exclamation-triangle" ng-hide="tallas.estadoextension2==1"></span>
-                <span class="fa fa-check-circle" ng-show="tallas.estadoextension2==1"></span>
+                <span class="fa fa-exclamation-triangle" style="color:#FF0040"  ng-hide="tallas.estadoextension2==1"></span>
+                <span class="fa fa-check-circle" style="color:#2F9B89" ng-show="tallas.estadoextension2==1"></span>
             </td>
             <!--<td>
                 {{tallas.stock}}
