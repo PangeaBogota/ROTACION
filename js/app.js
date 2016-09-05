@@ -149,9 +149,7 @@ app_angular.controller('sessionController',['bootbox','Conexion','$scope','$loca
                     })
                     .then(
                         function success(data1) {
-                            debugger
                             angular.forEach($scope.detalle_pedidos_detalle,function(extension){
-                                debugger
                                 if (extension.pedidoDetalle.toString().includes(data1.data.rowid_inicial)) {
 
                                     extension.cantidad=extension.cantidad.slice(0,-2)
